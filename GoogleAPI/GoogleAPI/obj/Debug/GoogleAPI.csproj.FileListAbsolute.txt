@@ -1,4 +1,3 @@
-\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\credentials.json
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\GoogleAPI.exe.config
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\GoogleAPI.exe
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\GoogleAPI.pdb
