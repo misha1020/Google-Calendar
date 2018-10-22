@@ -17,11 +17,12 @@
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\Google.Apis.Core.pdb
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\Google.Apis.Core.xml
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\bin\Debug\Newtonsoft.Json.xml
-\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.csprojAssemblyReference.cache
-\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.Form1.resources
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.Properties.Resources.resources
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.csproj.GenerateResource.cache
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.csproj.CoreCompileInputs.cache
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.csproj.CopyComplete
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.exe
 \\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.pdb
+\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.FormCalendar.resources
+\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.FormInsertUpdate.resources
+\\Mac\Home\Documents\GitHub\Google-Calendar\GoogleAPI\GoogleAPI\obj\Debug\GoogleAPI.csprojAssemblyReference.cache

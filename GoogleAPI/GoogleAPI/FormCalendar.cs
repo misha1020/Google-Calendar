@@ -14,20 +14,15 @@ using System.Windows.Forms;
 
 namespace GoogleAPI
 {
-    public partial class Form1 : Form
+    public partial class FormCalendar : Form
     {
         static string[] Scopes = { CalendarService.Scope.CalendarEvents };
         UserCredential credential;
         CalendarService service;
 
-        public Form1()
+        public FormCalendar()
         {
             InitializeComponent();
-
-        }
-
-        public void Read()
-        {
 
         }
 
@@ -86,7 +81,6 @@ namespace GoogleAPI
                     lvEvents.Items.Add(newItem);
                 }
                 lvEvents.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-
             }
             else
             {
@@ -94,38 +88,33 @@ namespace GoogleAPI
             }
         }
 
-        private void AddEvent()
+        private Event MakeEvent(string summary, string location, string description, DateTime startTime, DateTime startHour, DateTime endTime, DateTime endHour)
         {
-
             Event newEvent = new Event()
             {
-                Summary = "New SANjsf",
-                Location = "800 Howard St., San Francisco, CA 94103",
-                Description = "asjhfkajshf"
+                Summary = summary,
+                Location = location,
+                Description = description
             };
-
-            DateTime startTime = new DateTime(2018, 10, 22, 16, 30, 0);
+            
+            DateTime inTheStart = new DateTime(startTime.Year, startTime.Month, startTime.Day,  startHour.Hour, startHour.Minute, startHour.Second);
             EventDateTime start = new EventDateTime()
             {
-                DateTime = startTime,
-                TimeZone = "America/Los_Angeles"
+                DateTime = inTheStart
             };
             newEvent.Start = start;
 
-            DateTime endTime = new DateTime(2018, 10, 22, 18, 30, 0);
+            DateTime inTheEnd = new DateTime(endTime.Year, endTime.Month, endTime.Day, endHour.Hour, endHour.Minute, endHour.Second);
             EventDateTime end = new EventDateTime()
             {
-                DateTime = endTime,
-                TimeZone = "America/Los_Angeles"
+                DateTime = inTheEnd
             };
             newEvent.End = end;
 
-            service.Events.Insert(newEvent, "primary").Execute();
-
-
+            return newEvent;            
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btAuth_Click(object sender, EventArgs e)
         {
             try
             {
@@ -134,20 +123,19 @@ namespace GoogleAPI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка аутентификации");
+                MessageBox.Show("Authentication failed!");
                 lvEvents.Items.Clear();
             }
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btRelogin_Click(object sender, EventArgs e)
         {
             GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
         }
 
         private void btDelete_Click(object sender, EventArgs e)
         {
-            // Delete an event
             if (lvEvents.SelectedItems.Count != 0)
             {
                 service.Events.Delete("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
@@ -155,12 +143,35 @@ namespace GoogleAPI
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btInsert_Click(object sender, EventArgs e)
         {
-            AddEvent();
+            var FormInsUpd = new FormInsertUpdate("Insert");
+            if (FormInsUpd.ShowDialog() == DialogResult.OK)
+            {
+                {
+                    Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
+                    service.Events.Insert(newEvent, "primary").Execute();
+                    UpdateList();
+                }
+            }
+        }
 
-            UpdateList();
-
+        private void btUpdate_Click(object sender, EventArgs e)
+        {
+            if (lvEvents.SelectedItems.Count != 0)
+            {
+                var FormInsUpd = new FormInsertUpdate("Update")
+                {
+                    Summary = lvEvents.SelectedItems[0].Text
+                };
+                if (FormInsUpd.ShowDialog() == DialogResult.OK)
+                {
+                    service.Events.Get("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
+                    Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
+                    service.Events.Update(newEvent, "primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
+                    UpdateList();
+                }
+            }
         }
     }
 }
