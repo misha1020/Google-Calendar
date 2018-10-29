@@ -4,12 +4,9 @@ using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Net.NetworkInformation;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GoogleAPI
@@ -23,7 +20,6 @@ namespace GoogleAPI
         public FormCalendar()
         {
             InitializeComponent();
-
         }
 
         public void OAuth2()
@@ -38,8 +34,26 @@ namespace GoogleAPI
                 "user",
                 CancellationToken.None,
                 new FileDataStore(credPath, true)).Result;
-                MessageBox.Show("Credential file saved!");
             }
+        }
+
+        public static bool CheckForInternetConnection()
+        {
+            try
+            {
+                Ping myPing = new Ping();
+                String host = "google.com";
+                byte[] buffer = new byte[32];
+                int timeout = 500;
+                PingOptions pingOptions = new PingOptions();
+                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
+                return (reply.Status == IPStatus.Success);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         private void UpdateList()
@@ -54,7 +68,7 @@ namespace GoogleAPI
 
             // Define parameters of request.
             EventsResource.ListRequest request = service.Events.List("primary");
-            request.TimeMin = DateTime.Now;
+            request.TimeMin = new DateTime(1997, 9, 11);
             request.ShowDeleted = false;
             request.SingleEvents = true;
             request.MaxResults = 100;
@@ -76,7 +90,7 @@ namespace GoogleAPI
                     {
                         end = eventItem.Start.Date;
                     }
-                    var newItem = new ListViewItem(new string[] { eventItem.Summary, start, end });
+                    var newItem = new ListViewItem(new string[] { eventItem.Summary, eventItem.Location, start, end });
                     newItem.Tag = eventItem.Id;
                     lvEvents.Items.Add(newItem);
                 }
@@ -116,62 +130,99 @@ namespace GoogleAPI
 
         private void btAuth_Click(object sender, EventArgs e)
         {
-            try
+            if (CheckForInternetConnection())
             {
-                OAuth2();
-                UpdateList();
+                try
+                {
+                    OAuth2();
+                    UpdateList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Authentication failed!");
+                    lvEvents.Items.Clear();
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Authentication failed!");
-                lvEvents.Items.Clear();
-            }
-
+            else
+                MessageBox.Show("No internet connection available");
         }
 
         private void btRelogin_Click(object sender, EventArgs e)
         {
-            GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
+            if (credential != null)
+            {
+                if (CheckForInternetConnection())
+                {
+                    var task = GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
+                }
+                else
+                    MessageBox.Show("No internet connection available");
+            }
+            else
+                MessageBox.Show("You are not logged, press button 'Log In / Load event'");
         }
 
         private void btDelete_Click(object sender, EventArgs e)
         {
+
             if (lvEvents.SelectedItems.Count != 0)
             {
-                service.Events.Delete("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
-                lvEvents.Items.Remove(lvEvents.SelectedItems[0]);
+                if (CheckForInternetConnection())
+                {
+                    service.Events.Delete("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
+                    lvEvents.Items.Remove(lvEvents.SelectedItems[0]);
+                }
+                else
+                    MessageBox.Show("No internet connection available");
             }
+
         }
 
         private void btInsert_Click(object sender, EventArgs e)
         {
-            var FormInsUpd = new FormInsertUpdate("Insert");
-            if (FormInsUpd.ShowDialog() == DialogResult.OK)
+            if (credential != null)
             {
+                if (CheckForInternetConnection())
                 {
-                    Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
-                    service.Events.Insert(newEvent, "primary").Execute();
-                    UpdateList();
+                    var FormInsUpd = new FormInsertUpdate("Insert");
+                    if (FormInsUpd.ShowDialog() == DialogResult.OK)
+                    {
+                        {
+                            Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
+                            service.Events.Insert(newEvent, "primary").Execute();
+                            UpdateList();
+                        }
+                    }
                 }
+                else
+                    MessageBox.Show("No internet connection available");
             }
+            else
+                MessageBox.Show("To insert event you need to log in");
         }
 
         private void btUpdate_Click(object sender, EventArgs e)
         {
             if (lvEvents.SelectedItems.Count != 0)
             {
-                var FormInsUpd = new FormInsertUpdate("Update")
+                if (CheckForInternetConnection())
                 {
-                    Summary = lvEvents.SelectedItems[0].Text
-                };
-                if (FormInsUpd.ShowDialog() == DialogResult.OK)
-                {
-                    service.Events.Get("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
-                    Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
-                    service.Events.Update(newEvent, "primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
-                    UpdateList();
+                    var FormInsUpd = new FormInsertUpdate("Update")
+                    {
+                        Summary = lvEvents.SelectedItems[0].SubItems[0].Text,
+                        Location = lvEvents.SelectedItems[0].SubItems[1].Text
+                    };
+                    if (FormInsUpd.ShowDialog() == DialogResult.OK)
+                    {
+                        service.Events.Get("primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
+                        Event newEvent = MakeEvent(FormInsUpd.Summary, FormInsUpd.Location, FormInsUpd.Description, FormInsUpd.StartTime, FormInsUpd.StartHour, FormInsUpd.EndTime, FormInsUpd.EndHour);
+                        service.Events.Update(newEvent, "primary", lvEvents.SelectedItems[0].Tag.ToString()).Execute();
+                        UpdateList();
+                    }
                 }
-            }
+                else
+                    MessageBox.Show("No internet connection available");
+            }   
         }
     }
 }

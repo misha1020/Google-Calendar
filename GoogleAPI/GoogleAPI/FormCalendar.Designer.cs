@@ -32,6 +32,7 @@
             this.btRelog = new System.Windows.Forms.Button();
             this.lvEvents = new System.Windows.Forms.ListView();
             this.chName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chStartTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chFinishTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btDelete = new System.Windows.Forms.Button();
@@ -41,17 +42,17 @@
             // 
             // btAuth
             // 
-            this.btAuth.Location = new System.Drawing.Point(518, 12);
+            this.btAuth.Location = new System.Drawing.Point(518, 68);
             this.btAuth.Name = "btAuth";
             this.btAuth.Size = new System.Drawing.Size(150, 50);
             this.btAuth.TabIndex = 1;
-            this.btAuth.Text = "Sigh In";
+            this.btAuth.Text = "Log In / Load events";
             this.btAuth.UseVisualStyleBackColor = true;
             this.btAuth.Click += new System.EventHandler(this.btAuth_Click);
             // 
             // btRelog
             // 
-            this.btRelog.Location = new System.Drawing.Point(518, 68);
+            this.btRelog.Location = new System.Drawing.Point(517, 12);
             this.btRelog.Name = "btRelog";
             this.btRelog.Size = new System.Drawing.Size(150, 50);
             this.btRelog.TabIndex = 2;
@@ -63,6 +64,7 @@
             // 
             this.lvEvents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chName,
+            this.chLocation,
             this.chStartTime,
             this.chFinishTime});
             this.lvEvents.FullRowSelect = true;
@@ -78,6 +80,10 @@
             // 
             this.chName.Text = "Name";
             this.chName.Width = 45;
+            // 
+            // chLocation
+            // 
+            this.chLocation.Text = "Location";
             // 
             // chStartTime
             // 
@@ -147,6 +153,7 @@
         private System.Windows.Forms.Button btDelete;
         private System.Windows.Forms.Button btInsert;
         private System.Windows.Forms.Button btUpdate;
+        private System.Windows.Forms.ColumnHeader chLocation;
     }
 }
 

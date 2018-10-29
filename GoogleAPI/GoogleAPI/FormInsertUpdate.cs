@@ -24,6 +24,7 @@ namespace GoogleAPI
         public new string Location
         {
             get { return tbLocation.Text; }
+            set { tbLocation.Text = value; }
         }
 
         public string Description
@@ -67,25 +68,25 @@ namespace GoogleAPI
 
         private void dtpStartTime_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpStartTime.Value > dtpEndTime.Value)
+            if (dtpStartTime.Value.Date > dtpEndTime.Value.Date)
                 dtpStartTime.Value = dtpEndTime.Value;
         }
 
         private void dtpStartHour_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpStartTime.Value == dtpEndTime.Value && dtpStartHour.Value > dtpEndHour.Value)
+            if (dtpStartTime.Value.Date == dtpEndTime.Value.Date && dtpStartHour.Value.TimeOfDay > dtpEndHour.Value.TimeOfDay)
                 dtpStartHour.Value = dtpEndHour.Value;
         }
         
         private void dtpEndTime_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpEndTime.Value < dtpStartTime.Value)
+            if (dtpEndTime.Value.Date < dtpStartTime.Value.Date)
                 dtpEndTime.Value = dtpStartTime.Value;
         }
 
         private void dtpEndHour_ValueChanged(object sender, EventArgs e)
         {
-            if (dtpStartTime.Value == dtpEndTime.Value && dtpEndHour.Value < dtpStartHour.Value)
+            if (dtpStartTime.Value.Date == dtpEndTime.Value.Date && dtpEndHour.Value.TimeOfDay < dtpStartHour.Value.TimeOfDay)
                 dtpEndHour.Value = dtpStartHour.Value;
         }
         
